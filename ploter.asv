@@ -1,0 +1,45 @@
+function deadNum=ploter(Sensors,Model)
+    %% Developed by Amin Nazari 
+% 	aminnazari91@gmail.com 
+%	0918 546 2272
+    deadNum=0;
+    n=Model.n;
+    
+    checked = [];
+    k=1;
+    for i = 1:n
+        if ~ismember(i, checked)
+            group{k} = [i Sensors(i).neighbour];
+            checked = [checked i [Sensors(i).neighbour]];
+        end
+        k = k + 1;
+    end
+    
+    k = 1;
+    for i = 1:length(group)
+        if group{i} ~= []
+        k = k + 1;
+    end
+    
+    for i=1:n
+        %check dead node
+        if (Sensors(i).E>0)
+            
+            if(Sensors(i).type=='N' )      
+                plot(Sensors(i).xd,Sensors(i).yd,'o', 'MarkerSize',5);     
+            else %Sensors.type=='C'       
+                plot(Sensors(i).xd,Sensors(i).yd,'kx','MarkerSize',10);
+            end
+            
+        else
+            deadNum=deadNum+1;
+            plot(Sensors(i).xd,Sensors(i).yd,'red .');
+        end
+        
+        hold on;
+        
+    end 
+    plot(Sensors(n+1).xd,Sensors(n+1).yd,'g*','MarkerSize',15); 
+    axis square
+
+end
