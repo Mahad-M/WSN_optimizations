@@ -62,6 +62,7 @@ RRP(1)=rrp;
 SDP(1)=sdp;
 RDP(1)=rdp;
 
+Record = table([], [], [], [], []);  % time, cluster, id, data, status
 time_round = tic;
 %% Main loop program
 for r=1:1:Model.rmax
@@ -178,40 +179,41 @@ for r=1:1:Model.rmax
  
 %%%%%%%%%%%%%%% Sleep awake %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     elapsed_round = toc(time_round);
-    if elapsed_round >= 10 
+    if elapsed_round >= 10
+        now = string(datetime('now'));
         clusters = unique([Sensors(:).CID]);
         for i = clusters
-            all_CID = [Sensors(:).CID];
-            i_CID = all_CID == i;
-            group = find(i_CID);
-            energies = [Sensors(group).E];
-            energies(energies <= 0) = inf;
-            index_min = group(find(energies == min(energies)));
-            for k = group
-                if k ~= index_min
-                    Sensors(k).mode = 'S';
-                else
+            if i == 0
+                all_CID = [Sensors(:).CID];
+                i_CID = all_CID == i;
+                group = find(i_CID);
+                for k = group
                     Sensors(k).mode = 'A';
+                    new_row = table([now(1)], [Sensors(k).CID], [Sensors(k).id], [Sensors(k).data], [string(Sensors(k).mode)]);
+                    Record = [Record; new_row];
+                end
+            else
+                all_CID = [Sensors(:).CID];
+                i_CID = all_CID == i;
+                group = find(i_CID);
+                energies = [Sensors(group).E];
+                energies(energies <= 0) = inf;
+                index_min = group(find(energies == min(energies)));
+                for k = group
+                    if k ~= index_min
+                        Sensors(k).mode = 'S';
+                    else
+                        Sensors(k).mode = 'A';
+                    end
+                    new_row = table([now(1)], [Sensors(k).CID], [Sensors(k).id], [Sensors(k).data], [string(Sensors(k).mode)]);
+                    Record = [Record; new_row];
                 end
             end
         end
-%     for i = 1:n
-%         if Sensors(i).mode == 'A' && ~isempty([Sensors(i).neighbour])
-%             neighs = Sensors(i).neighbour;
-%             group = [i neighs];
-%             energies = [Sensors(group).E];
-%             index_min = group(find(energies == min(energies)));
-%             for k = group
-%                 if k ~= index_min
-%                     Sensors(k).mode = 'S';
-%                 end
-%             end
-%         end
-%     end
     time_round = tic;
     end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-   
+
 %% STATISTICS
      
     Sum_DEAD(r+1)=deadNum;
@@ -264,6 +266,8 @@ for r=1:1:Model.rmax
    end
   
 end % for r=0:1:rmax
+Record.Properties.VariableNames = {'time','pair','id','data', 'status'};
+writetable(Record, 'stats.csv');
 
 disp('End of Simulation');
 toc(time_start);

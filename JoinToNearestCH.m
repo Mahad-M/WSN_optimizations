@@ -19,7 +19,7 @@ if(m>1)
     [Dmin,idx]=min(D);
     
     for i=1:n       
-        if (Sensors(i).E>0)
+        if (Sensors(i).E>0 && Sensors(i).mode == 'A')
             %if node is in RR CH and is Nearer to CH rather than Sink
             if (Dmin(i) <= Model.RR && Dmin(i)<Sensors(i).dis2sink )
                 Sensors(i).MCH=TotalCH(idx(i)).id;

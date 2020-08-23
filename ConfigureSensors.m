@@ -43,8 +43,10 @@ for i=1:1:n
     %id
     Sensors(i).id=i;
     %Sensors(i).RR=Model.RR;
-    %Cluster id
+    %Cluster color
     Sensors(i).color = [0 1 1];
+    % cluster ID
+    Sensors(i).CID = 0;
     Sensors(i).selected = 0;
     %sleep or awake
     Sensors(i).mode = 'A';

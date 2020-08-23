@@ -17,7 +17,7 @@ function deadNum=ploter(Sensors,Model)
             
         else
             deadNum=deadNum+1;
-            plot(Sensors(i).xd,Sensors(i).yd,'red .');
+            plot(Sensors(i).xd,Sensors(i).yd,'.', 'Color', Sensors(i).color);
         end
         
         hold on;

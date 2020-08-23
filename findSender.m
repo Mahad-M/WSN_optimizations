@@ -8,7 +8,7 @@ function Sender=findSender(Sensors,Model,Receiver)
  
     for i=1:n
 
-        if (Sensors(i).MCH==Receiver & Sensors(i).id~=Receiver)
+        if (Sensors(i).MCH==Receiver & Sensors(i).id~=Receiver & Sensors(i).mode == 'A')
             Sender=[Sender,Sensors(i).id]; %#ok
         end
 
